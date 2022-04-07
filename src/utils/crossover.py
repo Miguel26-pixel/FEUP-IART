@@ -54,7 +54,7 @@ def SA_crossover(parent1 : List[int], parent2 : List[int], graph : graph.Graph):
         junction_i = graph.junctions[junction_i_num]
         for j, junction_j_num in enumerate(parent2):
             junction_j = graph.junctions[junction_j_num]
-            if junction_i.is_neighbour(junction_j):
+            if junction_j in junction_i.neighbours:
                 cross_point_list.append(i)
 
                 if i in match_point_list.keys():
@@ -67,6 +67,34 @@ def SA_crossover(parent1 : List[int], parent2 : List[int], graph : graph.Graph):
 
     chosen_i = random.choice(cross_point_list)
     chosen_j = random.choice(match_point_list[chosen_i])
+
+    return parent1[:chosen_i + 1] + parent2[chosen_j:]
+
+def SA_crossover2(parent1 : List[int], parent2 : List[int], graph : graph.Graph):
+    neighbours = set()
+    match_point_list = set()
+
+    for junction_num in parent1:
+        neighbours = neighbours.union(graph.junctions[junction_num].neighbours)
+
+    for idx, junction_num in enumerate(parent2):
+        junction = graph.junctions[junction_num]
+
+        if junction in neighbours:
+            match_point_list.add(idx)
+
+    chosen_j = random.choice(tuple(match_point_list))
+    chosen_junction_j = graph.junctions[parent2[chosen_j]]
+
+    cross_point_list = set()
+
+    for idx, junction_num in enumerate(parent1):
+        junction = graph.junctions[junction_num]
+
+        if chosen_junction_j in junction.neighbours:
+            cross_point_list.add(idx)
+
+    chosen_i = random.choice(tuple(cross_point_list))
 
     return parent1[:chosen_i + 1] + parent2[chosen_j:]
 
@@ -93,13 +121,12 @@ network.add_street(5, 7, 1, 1, False)
 network.add_street(7, 6, 1, 1, True)
 
 
-
 def test():
     sum = 0
 
-    for i in range(0, 1):
-        list1 = [random.randint(0,1000) for i in range(0, random.randint(1000, 10000))]
-        list2 = [random.randint(0,1000) for i in range(0, random.randint(1000, 10000))]
+    for i in range(0, 100):
+        list1 = [random.randint(0,1000) for i in range(0, random.randint(10000, 50000))]
+        list2 = [random.randint(0,1000) for i in range(0, random.randint(10000, 50000))]
 
         network = graph.Graph()
 
@@ -109,19 +136,14 @@ def test():
             network.add_street(random.randint(0, 1000), random.randint(0, 1000), 1, 1, bool(random.getrandbits(1)))
 
         start = time.time()
-        SA_crossover(list1, list2, network)
+        SA_crossover2(list1, list2, network)
         end = time.time()
 
         sum += (end - start)
 
     print(sum/100)
 
-cProfile.run('test()')
 
-test()
-
-# print(SA_crossover([0, 1, 3], [0,2,4,5,6], network))
-
-
-
+# print(SA_crossover2([0, 1, 3], [0,2,4,5,6], network))
 # print(singlepoint_crossover([1,2,3,4,5,6], [1,7,8,4,9,10]))
+cProfile.run('test()')

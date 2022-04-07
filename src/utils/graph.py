@@ -1,4 +1,4 @@
-from typing import List, Tuple, Type
+from typing import List, Set, Tuple, Type
 from unicodedata import bidirectional
 
 
@@ -47,20 +47,17 @@ class Junction:
     def __init__(self, coords: Tuple[float, float]):
         self.coords = coords  # type: Tuple[float, float]
         self.streets = []   # type: List[Street]
+        self.neighbours = set() # type: Set[Junction]
         self.visited = False
-
-    def is_neighbour(self, neighbour):
-        if neighbour is self:
-            return False
-
-        for street in self.streets:
-            if neighbour is street.final or neighbour is street.initial:
-                return True
-        
-        return False
 
     def add_street(self, street: Street):
         self.streets.append(street)
+
+        if not (street.initial is self):
+            self.neighbours.add(street.initial)
+
+        if not (street.final is self):
+            self.neighbours.add(street.final)
 
     def __str__(self):
         return "Junction at " + ','.join(map(str, self.coords))
