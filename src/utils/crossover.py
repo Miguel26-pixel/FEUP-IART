@@ -51,21 +51,21 @@ def SA_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
     neighbours = set()
     match_point_list = set()
 
-    for junction_num in parent1:
+    for junction_num in parent2:
         neighbours.update(graph.junctions[junction_num].neighbours)
 
-    for idx, junction_num in enumerate(parent2):
+    for idx, junction_num in enumerate(parent1):
         junction = graph.junctions[junction_num]
 
         if junction in neighbours:
             match_point_list.add(idx)
 
     chosen_j = random.choice(tuple(match_point_list))
-    chosen_junction_j = graph.junctions[parent2[chosen_j]]
+    chosen_junction_j = graph.junctions[parent1[chosen_j]]
 
     cross_point_list = set()
 
-    for idx, junction_num in enumerate(parent1):
+    for idx, junction_num in enumerate(parent2):
         junction = graph.junctions[junction_num]
 
         if chosen_junction_j in junction.neighbours:
@@ -73,4 +73,4 @@ def SA_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
 
     chosen_i = random.choice(tuple(cross_point_list))
 
-    return parent1[:chosen_i + 1] + parent2[chosen_j:]
+    return parent2[:chosen_i + 1] + parent1[chosen_j:]
