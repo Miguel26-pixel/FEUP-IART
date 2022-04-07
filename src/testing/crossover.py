@@ -1,5 +1,5 @@
 from utils import graph
-from utils.crossover import singlepoint_crossover, SA_crossover
+from utils.crossover import singlepoint_crossover, SA_crossover, order_crossover
 from testing.profiling import profile_crossover
 
 network = graph.Graph()
@@ -26,6 +26,7 @@ network.add_street(5, 7, 1, 1, False)
 network.add_street(7, 6, 1, 1, True)
 
 # print(SA_crossover([0,2,4,5,6], [0, 1, 3], network))
+#print(order_crossover([0,2,4,5,6], [1,3,7,8], network))
 # print(singlepoint_crossover([1,2,3,4,5,6], [1,7,8,4,9,10], None))
 # print(profile_crossover(singlepoint_crossover, 100000, 80000, 20))
 # print(profile_crossover(SA_crossover, 100000, 80000, 20))

@@ -80,3 +80,13 @@ def SA_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
 
 def SA_crossover_reversed(parent1: List[int], parent2: List[int], graph: graph.Graph):
     return SA_crossover(parent2, parent1, graph)
+
+
+def order_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
+    idx1_start = random.randint(0, len(parent1) - 1)
+    idx1_end = random.randint(idx1_start, len(parent1)-1)
+
+    idx2_start = random.randint(0, len(parent2) - 1)
+    idx2_end = random.randint(idx2_start, len(parent2) - 1)
+
+    return parent2[:idx2_start] + parent1[idx1_start:idx1_end + 1] + parent2[idx2_end + 1:]
