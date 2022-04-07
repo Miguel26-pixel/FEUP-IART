@@ -47,7 +47,7 @@ class Junction:
     def __init__(self, coords: Tuple[float, float]):
         self.coords = coords  # type: Tuple[float, float]
         self.streets = []   # type: List[Street]
-        self.neighbours = set() # type: Set[Junction]
+        self.neighbours = set()  # type: Set[Junction]
         self.visited = False
 
     def add_street(self, street: Street):

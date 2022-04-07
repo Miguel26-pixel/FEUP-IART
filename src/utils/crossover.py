@@ -2,10 +2,12 @@ from typing import List
 from . import graph
 import random
 
+
 def get_common_junctions(list1, list2):
     return (set(list1) & set(list2))
 
-def get_crossover_point(parent1 : List[int], parent2 : List[int]):
+
+def get_crossover_point(parent1: List[int], parent2: List[int]):
     common_junctions = get_common_junctions(parent1, parent2)
 
     if(len(common_junctions) == 0):
@@ -31,7 +33,8 @@ def get_crossover_point(parent1 : List[int], parent2 : List[int]):
 
 # should we remove cycles?
 
-def singlepoint_crossover(parent1 : List[int], parent2 : List[int], graph : graph.Graph):
+
+def singlepoint_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
     points = get_crossover_point(parent1, parent2)
 
     if points == None:
@@ -43,7 +46,8 @@ def singlepoint_crossover(parent1 : List[int], parent2 : List[int], graph : grap
 
 # one offspring version of SA
 
-def SA_crossover(parent1 : List[int], parent2 : List[int], graph : graph.Graph):
+
+def SA_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
     neighbours = set()
     match_point_list = set()
 
