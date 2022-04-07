@@ -1,4 +1,5 @@
 from typing import List, Tuple, Type
+from unicodedata import bidirectional
 
 
 class Street:
@@ -27,6 +28,9 @@ class Street:
         self.bidirectional = bidirectional
         self.visited = False
 
+    def __str__(self):
+        return "Street from junction " + str(self.initial) + " to " + str(self.final) + " is bi? " + str(self.bidirectional)
+
 
 class Junction:
     """
@@ -45,8 +49,21 @@ class Junction:
         self.streets = []   # type: List[Street]
         self.visited = False
 
+    def is_neighbour(self, neighbour):
+        if neighbour is self:
+            return False
+
+        for street in self.streets:
+            if neighbour is street.final or neighbour is street.initial:
+                return True
+        
+        return False
+
     def add_street(self, street: Street):
         self.streets.append(street)
+
+    def __str__(self):
+        return "Junction at " + ','.join(map(str, self.coords))
 
 
 class Graph:
