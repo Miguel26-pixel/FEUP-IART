@@ -2,7 +2,8 @@ from typing import List
 import graph
 import random
 import time
-
+import cProfile
+import re
 
 def get_common_junctions(list1, list2):
     return (set(list1) & set(list2))
@@ -46,26 +47,28 @@ def singlepoint_crossover(parent1 : List[int], parent2 : List[int], graph : grap
 # one offspring version of SA
 
 def SA_crossover(parent1 : List[int], parent2 : List[int], graph : graph.Graph):
-    i = j = 0
+    cross_point_list = []
+    match_point_list = {}
 
-    while i < len(parent1):
-        while j < len(parent2):
-            pass
-    return 1
+    for i, junction_i_num in enumerate(parent1):
+        junction_i = graph.junctions[junction_i_num]
+        for j, junction_j_num in enumerate(parent2):
+            junction_j = graph.junctions[junction_j_num]
+            if junction_i.is_neighbour(junction_j):
+                cross_point_list.append(i)
 
-# sum = 0
+                if i in match_point_list.keys():
+                    match_point_list[i].append(j)
+                else:
+                    match_point_list[i] = [j]
 
-# for i in range(0, 100):
-#     list1 = [random.randint(0,1000) for i in range(0, random.randint(10000, 100000))]
-#     list2 = [random.randint(0,1000) for i in range(0, random.randint(10000, 100000))]
+    if len(cross_point_list) == 0:
+        return parent1
 
-#     start = time.time()
-#     singlepoint_crossover(list1, list2)
-#     end = time.time()
+    chosen_i = random.choice(cross_point_list)
+    chosen_j = random.choice(match_point_list[chosen_i])
 
-#     sum += (end - start)
-
-# print(sum/100)
+    return parent1[:chosen_i + 1] + parent2[chosen_j:]
 
 network = graph.Graph()
 
@@ -82,8 +85,6 @@ network.junctions = [junction1, junction2, junction3, junction4, junction5, junc
 
 network.add_street(0, 1, 1, 1, True)
 network.add_street(0, 2, 1, 1, False)
-network.add_street(1, 2, 1, 1, False)
-network.add_street(2, 3, 1, 1, False)
 network.add_street(2, 4, 1, 1, False)
 network.add_street(3, 4, 1, 1, False)
 network.add_street(4, 5, 1, 1, False)
@@ -92,13 +93,34 @@ network.add_street(5, 7, 1, 1, False)
 network.add_street(7, 6, 1, 1, True)
 
 
-# for junction in network.junctions:
-#     print(junction)
-#     for street in junction.streets:
-#         print(street)
 
+def test():
+    sum = 0
 
-print(junction3.is_neighbour(junction1))
+    for i in range(0, 1):
+        list1 = [random.randint(0,1000) for i in range(0, random.randint(1000, 10000))]
+        list2 = [random.randint(0,1000) for i in range(0, random.randint(1000, 10000))]
+
+        network = graph.Graph()
+
+        network.junctions = [graph.Junction((random.randint(1,10000),1)) for i in range(1001)]
+
+        for j in range(0, 1000):
+            network.add_street(random.randint(0, 1000), random.randint(0, 1000), 1, 1, bool(random.getrandbits(1)))
+
+        start = time.time()
+        SA_crossover(list1, list2, network)
+        end = time.time()
+
+        sum += (end - start)
+
+    print(sum/100)
+
+cProfile.run('test()')
+
+test()
+
+# print(SA_crossover([0, 1, 3], [0,2,4,5,6], network))
 
 
 
