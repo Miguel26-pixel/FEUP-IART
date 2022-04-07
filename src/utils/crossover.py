@@ -74,3 +74,9 @@ def SA_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
     chosen_i = random.choice(tuple(cross_point_list))
 
     return parent2[:chosen_i + 1] + parent1[chosen_j:]
+
+# will this make any difference?
+
+
+def SA_crossover_reversed(parent1: List[int], parent2: List[int], graph: graph.Graph):
+    return SA_crossover(parent2, parent1, graph)
