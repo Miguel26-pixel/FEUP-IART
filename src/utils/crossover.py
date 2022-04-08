@@ -1,7 +1,7 @@
 # cython: profile=True
-# cython: linetrace=True
-# cython: binding=True
-# distutils: define_macros=CYTHON_TRACE_NOGIL=1
+# c--ython: linetrace=True
+# c--ython: binding=True
+# d--istutils: define_macros=CYTHON_TRACE_NOGIL=1
 import cython
 from typing import List
 from . import graph
@@ -58,13 +58,11 @@ def SA_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
         neighbours.update(graph.junctions[junction_num].neighbours)
 
     for idx, junction_num in enumerate(parent1):
-        junction = graph.junctions[junction_num]
-
-        if junction in neighbours:
+        if junction_num in neighbours:
             match_point_list.add(idx)
 
     chosen_j = random.choice(tuple(match_point_list))
-    chosen_junction_j = graph.junctions[parent1[chosen_j]]
+    chosen_junction_j = parent1[chosen_j]
 
     cross_point_list = set()
 

@@ -47,7 +47,7 @@ class Junction:
     def __init__(self, coords: Tuple[float, float], id : int):
         self.coords = coords  # type: Tuple[float, float]
         self.streets = []   # type: List[Street]
-        self.neighbours = set()  # type: Set[Junction]
+        self.neighbours = set()  # type: Set[int]
         self.id = id
         self.visited = False
 
@@ -55,10 +55,10 @@ class Junction:
         self.streets.append(street)
 
         if not (street.initial is self):
-            self.neighbours.add(street.initial)
+            self.neighbours.add(street.initial.id)
 
         if not (street.final is self):
-            self.neighbours.add(street.final)
+            self.neighbours.add(street.final.id)
 
     def __str__(self):
         return "Junction at " + ','.join(map(str, self.coords))
