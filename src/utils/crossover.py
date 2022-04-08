@@ -1,7 +1,11 @@
+# cython: profile=True
+# cython: linetrace=True
+# cython: binding=True
+# distutils: define_macros=CYTHON_TRACE_NOGIL=1
+import cython
 from typing import List
 from . import graph
 import random
-
 
 def get_common_junctions(list1, list2):
     return (set(list1) & set(list2))
@@ -45,7 +49,6 @@ def singlepoint_crossover(parent1: List[int], parent2: List[int], graph: graph.G
     return parent2[:idx2] + parent1[idx1:]
 
 # one offspring version of SA
-
 
 def SA_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
     neighbours = set()

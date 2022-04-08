@@ -44,10 +44,11 @@ class Junction:
         the neighbouring streets
     """
 
-    def __init__(self, coords: Tuple[float, float]):
+    def __init__(self, coords: Tuple[float, float], id : int):
         self.coords = coords  # type: Tuple[float, float]
         self.streets = []   # type: List[Street]
         self.neighbours = set()  # type: Set[Junction]
+        self.id = id
         self.visited = False
 
     def add_street(self, street: Street):
@@ -67,6 +68,9 @@ class Graph:
     def __init__(self):
         self.junctions = []  # type: List[Junction]
         self.streets = []  # type: List[Street]
+
+    def add_junction(self, coords: Tuple[float, float]):
+        self.junctions.append(Junction(coords, len(self.junctions)))
 
     def add_street(self, init: int, end: int, length: int, time: int, bidirectional: bool):
         init_junction = self.junctions[init]

@@ -28,8 +28,8 @@ def profile_crossover(target_profile_function, graph_size, path_size, count):
 
         network = graph.Graph()
 
-        network.junctions = [graph.Junction(
-            (random.randint(1, 10000), 1)) for i in range(graph_size + 1)]
+        for _ in range(graph_size + 1):
+            network.add_junction((random.randint(1, 10000), 1))
 
         for j in range(0, int(graph_size * 1.2)):
             network.add_street(random.randint(0, graph_size), random.randint(
