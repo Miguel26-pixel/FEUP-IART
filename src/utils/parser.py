@@ -1,12 +1,11 @@
-from operator import truediv
-from src.utils.graph import Graph, Junction, Street
-from src.utils.routing import Router
+from .graph import Graph, Junction, Street
+from .routing import Router
 
 
-def parse_information() :
+def parse_information(file_path) :
     graph = Graph()
 
-    f = open('./files/input.txt', 'r')
+    f = open(file_path, 'r')
 
     first_config = f.readline().strip().split(" ")
 
@@ -16,9 +15,9 @@ def parse_information() :
     number_of_cars = int(first_config[3])
     start_junction = int(first_config[4])
 
-    for _ in range(number_of_junctions):
+    for i in range(number_of_junctions):
         junction_config = f.readline().strip().split(" ")
-        junction = Junction((float(junction_config[0])*5,float(junction_config[1])*5))
+        junction = Junction((float(junction_config[0]),float(junction_config[1])), i)
         graph.junctions.append(junction)
 
     for i in range(number_of_streets):

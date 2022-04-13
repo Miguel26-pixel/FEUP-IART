@@ -1,7 +1,7 @@
 import pygame
 from math import pi
-from src.utils.graph import Graph, Junction, Street
-from src.utils.routing import Router
+from .graph import Graph, Junction, Street
+from .routing import Router
 
 
 def draw_graph(graph):
@@ -32,7 +32,6 @@ def draw_graph(graph):
     screen.fill(WHITE)
 
     for junction in junctions :
-        print(len(junctions))
         pygame.draw.circle(screen, BLUE, list(junction.coords), 1)
 
     pygame.display.flip()
