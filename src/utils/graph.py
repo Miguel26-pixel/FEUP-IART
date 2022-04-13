@@ -1,4 +1,5 @@
-from typing import List, Tuple, Type
+from typing import List, Set, Tuple, Type
+from unicodedata import bidirectional
 
 
 class Street:
@@ -27,6 +28,9 @@ class Street:
         self.bidirectional = bidirectional
         self.visited = False
 
+    def __str__(self):
+        return "Street from junction " + str(self.initial) + " to " + str(self.final) + " is bi? " + str(self.bidirectional)
+
 
 class Junction:
     """
@@ -40,19 +44,33 @@ class Junction:
         the neighbouring streets
     """
 
-    def __init__(self, coords: Tuple[float, float]):
+    def __init__(self, coords: Tuple[float, float], id : int):
         self.coords = coords  # type: Tuple[float, float]
         self.streets = []   # type: List[Street]
+        self.neighbours = set()  # type: Set[int]
+        self.id = id
         self.visited = False
 
     def add_street(self, street: Street):
         self.streets.append(street)
+
+        if not (street.initial is self):
+            self.neighbours.add(street.initial.id)
+
+        if not (street.final is self):
+            self.neighbours.add(street.final.id)
+
+    def __str__(self):
+        return "Junction at " + ','.join(map(str, self.coords))
 
 
 class Graph:
     def __init__(self):
         self.junctions = []  # type: List[Junction]
         self.streets = []  # type: List[Street]
+
+    def add_junction(self, coords: Tuple[float, float]):
+        self.junctions.append(Junction(coords, len(self.junctions)))
 
     def add_street(self, init: int, end: int, length: int, time: int, bidirectional: bool):
         init_junction = self.junctions[init]
