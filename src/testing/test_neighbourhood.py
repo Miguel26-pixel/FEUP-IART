@@ -71,6 +71,14 @@ def test_add_middle_node():
     assert sol == [[5, 6, 8], [5, 7, 8]]
 
 
+def test_remove_middle_node():
+    sol = neighbourhood.remove_middle_node([5, 1, 7], network)
+    assert sol == [[5, 7]]
+
+    sol = neighbourhood.remove_middle_node([5, 1, 6], network)
+    assert sol == [[5, 6]]
+
+
 def test_single_car():
     random.seed(0)
 

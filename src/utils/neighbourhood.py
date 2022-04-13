@@ -52,6 +52,19 @@ def add_middle_node(solution: List[int], graph: graph.Graph):
     return solutions
 
 
+def remove_middle_node(solution: List[int], graph: graph.Graph):
+    solutions = []
+
+    for idx in range(1, len(solution) - 1):
+
+        prev_node = graph.junctions[solution[idx-1]]
+        next_node_id = solution[idx+1]
+        if next_node_id in prev_node.neighbours:
+            solutions.append(solution[:idx] + solution[idx+1:])
+
+    return solutions
+
+
 NEIGHBOURHOOD_FUNCTIONS = [add_node, remove_node]
 
 ACTION_RATIO = 0.8
