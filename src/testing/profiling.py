@@ -16,6 +16,29 @@ def average(stats, count):
 
     return stats
 
+def profile_solve(target_profile_function, count):
+    output_stream = io.StringIO()
+    profiller_status = pstats.Stats(stream=output_stream)
+
+    for index in range(count):
+        profiller = cProfile.Profile()
+
+        profiller.enable()
+
+        target_profile_function()
+
+        profiller.disable()
+        profiller_status.add(profiller)
+
+        print('Profiled', '%.3f' % profiller_status.total_tt, 'seconds at', index,
+              'for', target_profile_function.__name__, flush=True)
+
+    average(profiller_status, count)
+    profiller_status.sort_stats("time")
+    profiller_status.print_stats()
+
+    return "\nProfile results for %s\n%s" % (
+           target_profile_function.__name__, output_stream.getvalue())
 
 def profile_crossover(target_profile_function, graph_size, path_size, count):
     output_stream = io.StringIO()
