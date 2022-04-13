@@ -13,6 +13,7 @@ network.add_junction((4, 4))
 network.add_junction((5, 4))
 network.add_junction((6, 4))
 network.add_junction((7, 4))
+network.add_junction((10, 4))
 
 network.add_street(0, 1, 1, 1, True)
 network.add_street(0, 2, 1, 1, False)
@@ -22,6 +23,8 @@ network.add_street(4, 5, 1, 1, False)
 network.add_street(5, 6, 1, 1, False)
 network.add_street(5, 7, 1, 1, False)
 network.add_street(7, 6, 1, 1, True)
+network.add_street(6, 8, 1, 1, True)
+network.add_street(7, 8, 1, 1, True)
 
 
 def test_add_node_empty():
@@ -40,8 +43,7 @@ def test_add_node_no_solution():
 
 def test_add_connectivity():
     sol = neighbourhood.add_node([7], network)
-    assert len(sol) == 1
-    assert sol[0] == [7, 6]
+    assert sol == [[7, 8], [7, 6]]
 
     sol = neighbourhood.add_node([5], network)
     assert len(sol) == 2
@@ -59,6 +61,14 @@ def test_remove_last_node():
     assert sol == [[]]
     sol = neighbourhood.remove_node([2, 3], network)
     assert sol == [[2]]
+
+
+def test_add_middle_node():
+    sol = neighbourhood.add_middle_node([2, 5], network)
+    assert sol == [[2, 4, 5]]
+
+    sol = neighbourhood.add_middle_node([5, 8], network)
+    assert sol == [[5, 6, 8], [5, 7, 8]]
 
 
 def test_single_car():
