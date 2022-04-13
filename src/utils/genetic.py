@@ -1,5 +1,3 @@
-# cython: profile=True
-
 import random
 from typing import List
 from .graph import Graph, Street
