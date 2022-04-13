@@ -1,3 +1,5 @@
+from .graph import Graph
+
 class Router:
     """
     Represents a Street View Routing Problem and provides methods to solve it.
@@ -15,7 +17,7 @@ class Router:
     """
 
     def __init__(self, time_itinerary, num_cars, initial_junction, graph) -> None:
-        self.time_itinerary = time_itinerary
-        self.num_cars = num_cars
-        self.initial_junction = initial_junction
-        self.graph = graph
+        self.time_itinerary : int = time_itinerary
+        self.num_cars : int = num_cars
+        self.initial_junction : int = initial_junction
+        self.graph : Graph = graph

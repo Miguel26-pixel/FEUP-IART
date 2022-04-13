@@ -72,6 +72,10 @@ class Graph:
     def add_junction(self, coords: Tuple[float, float]):
         self.junctions.append(Junction(coords, len(self.junctions)))
 
+    def reset_streets(self):
+        for street in self.streets:
+            street.visited = False
+
     def add_street(self, init: int, end: int, length: int, time: int, bidirectional: bool):
         init_junction = self.junctions[init]
         end_junction = self.junctions[end]
