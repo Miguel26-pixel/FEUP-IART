@@ -18,7 +18,6 @@ def check_solution(router, sol):
 
     for i in range(number_cars):
         total_time = 0
-        temp_length = 0
         number_of_junctions = len(sol[i])
 
         first_junction = sol[i][0]
@@ -41,14 +40,17 @@ def check_solution(router, sol):
             length, time, street = check_street(router.graph,fj,sj)
 
             total_time += time
-    
+            
+            if  not street.visited :
+                temp_length += length
+                street.visited = True
+
+            total_length += length
         
             if (total_time > router.time_itinerary):
-                total_length += temp_length
                 break
 
             if  not street.visited :
-                temp_length += length
                 street.visited = True
 
     
