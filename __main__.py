@@ -7,4 +7,4 @@ if __name__ == "__main__":
     router = parse_information('./files/input.txt')
     #print(router.graph.junctions[1].coords)
     #draw_graph(router.graph)
-    print(check_solution(router,[2,1,0,3,0,1,2]))
+    print(check_solution(router,[[0],[0,1,2]]))
