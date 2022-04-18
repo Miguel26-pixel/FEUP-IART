@@ -1,9 +1,10 @@
+from unicodedata import bidirectional
 from .graph import Graph, Junction, Street
 from .routing import Router
 
 def check_street(graph,initial,final):
     for i in graph.streets:
-        if (i.initial.id == initial and i.final.id == final):
+        if ((i.initial.id == initial and i.final.id == final) or i.bidirectional == True):
             return i.length, i.time, i
     
     return None
@@ -11,7 +12,6 @@ def check_street(graph,initial,final):
 
 def check_solution(router, sol):
     number_cars = sol[0]
-    visited_streets = []
     total_length = 0
     if (number_cars != router.num_cars) :
         return False, total_length
@@ -42,12 +42,12 @@ def check_solution(router, sol):
 
                 total_time += time
                 
-                if (street not in visited_streets):
+                if  not street.visited :
                     temp_length += length
-                    visited_streets.append(street)
+                    street.visited = True
         
         if (total_time > router.time_itinerary):
-            return False, total_length
+            break
         else :
             total_length += temp_length
 
