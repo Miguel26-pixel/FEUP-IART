@@ -40,17 +40,12 @@ def check_solution(router, sol):
             length, time, street = check_street(router.graph,fj,sj)
 
             total_time += time
-            
-            if  not street.visited :
-                temp_length += length
-                street.visited = True
-
-            total_length += length
         
             if (total_time > router.time_itinerary):
                 break
 
             if  not street.visited :
+                total_length += length
                 street.visited = True
 
     
