@@ -65,24 +65,26 @@ def remove_middle_node(solution: List[int], graph: graph.Graph):
     return solutions
 
 
-NEIGHBOURHOOD_FUNCTIONS = [add_node, remove_node]
-
-ACTION_RATIO = 0.8
+NEIGHBOURHOOD_FUNCTIONS = [add_node, remove_node,
+                           add_middle_node, remove_middle_node]
 
 
 def select_car_solution(solutions: List[int], _: graph.Graph):
     return random.choice(solutions)
 
 
-def neighbour_multiple_cars(solution: List[List[int]], graph: graph.Graph):
+def neighbour_multiple_cars(solution: List[List[int]], graph: graph.Graph, action_ratio: float):
     output = []
 
     for car in solution:
-        if random.random() < ACTION_RATIO:
+        if random.random() < action_ratio:
             f = random.choice(NEIGHBOURHOOD_FUNCTIONS)
             sols = f(car, graph)
             print(f, sols, car)
-            selected = select_car_solution(sols, graph)
+            if sols == []:
+                selected = car.copy()
+            else:
+                selected = select_car_solution(sols, graph)
             output.append(selected)
         else:
             output.append(car)

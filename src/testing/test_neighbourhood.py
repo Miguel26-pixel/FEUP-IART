@@ -80,31 +80,34 @@ def test_remove_middle_node():
 
 
 def test_single_car():
-    random.seed(0)
-
-    sol = neighbourhood.neighbour_single_car([[0, 5], [0]], network)
-    assert sol == [[0, 5], []]
-
     random.seed(1)
 
     sol = neighbourhood.neighbour_single_car([[0, 5], [0]], network)
     assert sol == [[0, 5, 7], [0]]
+
+    random.seed(2)
+
+    sol = neighbourhood.neighbour_single_car([[0, 5], [0]], network)
+    assert sol == [[0, 5, 6], [0]]
 
     random.seed(3)
 
     sol = neighbourhood.neighbour_single_car([[0, 5], [0]], network)
-    assert sol == [[0, 5, 7], [0]]
+    assert sol == [[0], [0]]
 
 
 def test_multiple_car():
     random.seed(0)
-    sol = neighbourhood.neighbour_multiple_cars([[0, 5], [0]], network)
-    assert sol == [[0, 5], []]
+    sol = neighbourhood.neighbour_multiple_cars([[0, 5], [0]], network, 1)
+    assert sol == [[0, 5], [0]]
 
     random.seed(1)
-    sol = neighbourhood.neighbour_multiple_cars([[0, 5], [0]], network)
-    assert sol == [[0, 5, 7], []]
+    sol = neighbourhood.neighbour_multiple_cars([[0, 5], [0]], network, 1)
+    assert sol == [[0, 5, 7], [0]]
 
     random.seed(4)
-    sol = neighbourhood.neighbour_multiple_cars([[0, 5], [0]], network)
+    sol = neighbourhood.neighbour_multiple_cars([[0, 5], [0]], network, 1)
     assert sol == [[0, 5, 7], [0, 1]]
+
+    sol = neighbourhood.neighbour_multiple_cars([[0, 5], [0]], network, 0)
+    assert sol == [[0, 5], [0]]
