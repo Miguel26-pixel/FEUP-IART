@@ -4,5 +4,5 @@ from meta.genetic import genetic
 
 
 router = parse_information('../files/input2.txt')
-print(len(router.graph.streets))
-genetic(router, 100, 0.4)
+pop_size = len(router.graph.streets) // router.num_cars // 10
+genetic(router, 100, pop_size, 0.4, 2)

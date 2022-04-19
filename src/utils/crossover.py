@@ -1,4 +1,4 @@
-# cython: profile=True
+# c--ython: profile=True
 # c--ython: linetrace=True
 # c--ython: binding=True
 # d--istutils: define_macros=CYTHON_TRACE_NOGIL=1
