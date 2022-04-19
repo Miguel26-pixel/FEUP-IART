@@ -5,6 +5,7 @@ import random
 from utils.routing import Router
 from utils.genetic import get_initial_pop, random_select
 from utils.crossover import SA_crossover, crossover
+from utils.solution import check_solution
 
 class GeneticSolver:
     def __init__(self, problem_info: Router, run_time: int):
@@ -39,11 +40,40 @@ class GeneticSolver:
     crossover_function = property(fset=set_crossover_function)
     mutation_chance = property(fset=set_mutation_chance)
 
-    def genetic_loop(self, population: List[List[List[int]]]):
-        init_time = time()
+    def get_evals(self, population: List[List[List[int]]]):
+        evals = []
 
+        for member in population:
+            _, val = check_solution(self._problem_info, member)
+
+            evals.append(val)
+
+        return evals
+
+    def get_best_eval(self, evals: List[int]):
+        idx_best = 0
+        for idx, val in enumerate(evals):
+            if val > evals[idx_best]:
+                idx_best = idx
+
+        return idx_best
+
+    def get_worst_eval(self, evals: List[int]):
+        idx_worst = 0
+        for idx, val in enumerate(evals):
+            if val < evals[idx_worst]:
+                idx_worst = idx
+
+        return idx_worst
+
+    def genetic_loop(self, population: List[List[List[int]]]):
+        evals = self.get_evals(population)
+        generations = 0
+
+        init_time = time()
         while(time() - init_time < self._run_time):
-            parent1 = random_select(population)
+            generations += 1
+            parent1 = population[self.get_best_eval(evals)]
             parent2 = random_select(population)
 
             child = crossover(parent1, parent2,
@@ -54,6 +84,13 @@ class GeneticSolver:
             if random_value < self._mutation_chance:
                 # TODO: mutate this bitch
                 pass
+
+            removed_member = self.get_worst_eval(evals)
+            population[removed_member] = child
+            _, evals[removed_member] = check_solution(self._problem_info, child)
+        print(f"DONE! in {time() - init_time} with {generations} generations")
+        
+        return evals[self.get_best_eval(evals)]
 
     def solve(self):
         n_streets = len(self._problem_info.graph.streets)

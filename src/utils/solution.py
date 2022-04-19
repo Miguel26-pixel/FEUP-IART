@@ -3,7 +3,7 @@ from utils.routing import Router
 
 def check_street(graph: Graph,initial,final):
     for street in graph.junctions[initial].streets:
-        if ((street.initial.id == initial and street.final.id == final) or (street.final.id == initial and street.initial.id == final)):
+        if (street.initial.id == final or street.final.id == final):
             return street
     
     return None
