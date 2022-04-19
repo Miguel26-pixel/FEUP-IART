@@ -80,7 +80,6 @@ def neighbour_multiple_cars(solution: List[List[int]], graph: graph.Graph, actio
         if random.random() < action_ratio:
             f = random.choice(NEIGHBOURHOOD_FUNCTIONS)
             sols = f(car, graph)
-            print(f, sols, car)
             if sols == []:
                 selected = car.copy()
             else:
