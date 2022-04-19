@@ -7,6 +7,7 @@ from typing import List
 from . import graph
 import random
 
+
 def get_common_junctions(list1, list2):
     return (set(list1) & set(list2))
 
@@ -50,6 +51,7 @@ def singlepoint_crossover(parent1: List[int], parent2: List[int], graph: graph.G
 
 # one offspring version of SA
 
+
 def SA_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
     neighbours = set()
     match_point_list = set()
@@ -91,3 +93,12 @@ def order_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
     idx2_end = random.randint(idx2_start, len(parent2) - 1)
 
     return parent2[:idx2_start] + parent1[idx1_start:idx1_end + 1] + parent2[idx2_end + 1:]
+
+
+def crossover(parent1: List[List[int]], parent2: List[List[int]], graph: graph.Graph, crossover_func):
+    result = []
+
+    for i in range(len(parent1)):
+        result.append(crossover_func(parent1[i], parent2[i], graph))
+
+    return result
