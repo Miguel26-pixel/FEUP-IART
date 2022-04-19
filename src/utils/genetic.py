@@ -65,7 +65,6 @@ def random_solve(problem_info: Router, max_iterations : int, time_out : int):
 
     return solutions
 
-
 def get_initial_pop(problem_info: Router, size: int, queen_num: int, max_iterations, time_out):
     population = []
     total = size - queen_num
@@ -77,3 +76,7 @@ def get_initial_pop(problem_info: Router, size: int, queen_num: int, max_iterati
         population.append(random_solve(problem_info, max_iterations, time_out))
 
     return population
+
+
+def random_select(population: List[List[List[int]]]):
+    return random.choice(population)
