@@ -1,18 +1,19 @@
-from unicodedata import bidirectional
-from .graph import Graph, Junction, Street
-from .routing import Router
+from utils.graph import Graph, Junction, Street
+from utils.routing import Router
 
-def check_street(graph,initial,final):
-    for i in graph.streets:
-        if ((i.initial.id == initial and i.final.id == final) or i.bidirectional == True):
-            return i.length, i.time, i
+def check_street(graph: Graph,initial,final):
+    for street in graph.junctions[initial].streets:
+        if ((street.initial.id == initial and street.final.id == final) or (street.final.id == initial and street.initial.id == final)):
+            return street
     
     return None
 
 
-def check_solution(router, sol):
+def check_solution(router : Router, sol):
     number_cars = len(sol)
     total_length = 0
+    router.graph.reset_streets()
+
     if (number_cars != router.num_cars) :
         return False, total_length
 
@@ -23,35 +24,29 @@ def check_solution(router, sol):
         first_junction = sol[i][0]
         
         if (first_junction != router.initial_junction):
-            return False, total_length
+            break
 
         if (number_of_junctions == 1):
             continue
 
         for j in range(number_of_junctions-1):
-
             fj = sol[i][j]
             k = j + 1
             sj = sol[i][k]
 
-            if (check_street(router.graph,fj,sj) == None):
-                return False, total_length
+            street = check_street(router.graph,fj,sj) 
+            
+            if (street == None):
+                break
 
-            length, time, street = check_street(router.graph,fj,sj)
-
-            total_time += time
+            total_time += street.time
         
             if (total_time > router.time_itinerary):
                 break
 
             if  not street.visited :
-                total_length += length
+                total_length += street.length
                 street.visited = True
 
     
     return True, total_length
-
-
-
-#def score_solution(graph,sol):
-
