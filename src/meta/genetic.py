@@ -3,7 +3,7 @@ from time import time
 from typing import List
 import random
 from utils.routing import Router
-from utils.genetic import get_initial_pop, random_select
+from utils.genetic import get_initial_pop, selection_ga
 from utils.crossover import SA_crossover, crossover
 from utils.solution import check_solution
 from utils.neighbourhood import neighbour_single_car
@@ -77,8 +77,7 @@ class GeneticSolver:
                 print(time() - init_time)
                 print(evals[self.get_best_eval(evals)])
             generations += 1
-            parent1 = population[self.get_best_eval(evals)]
-            parent2 = random_select(population)
+            [parent1, parent2] = selection_ga(evals, population)
 
             child = crossover(parent1, parent2,
                               self._problem_info.graph, self._crossover_function)

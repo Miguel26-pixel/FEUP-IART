@@ -2,7 +2,6 @@
 # c--ython: linetrace=True
 # c--ython: binding=True
 # d--istutils: define_macros=CYTHON_TRACE_NOGIL=1
-import cython
 from typing import List
 from . import graph
 import random
