@@ -77,3 +77,11 @@ def get_initial_pop(problem_info: Router, size: int, queen_num: int, max_iterati
         population.append(random_solve(problem_info, max_iterations, time_out))
 
     return population
+
+def normalize_solutions(evals: List[int]):
+    sum_evals = sum(evals)
+    return [x / sum_evals for x in evals]
+
+def selection_ga(evals: List[int], solutions):
+    normalized = normalize_solutions(evals)
+    return random.choices(solutions, normalized)
