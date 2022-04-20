@@ -61,7 +61,6 @@ def remove_middle_node(solution: List[int], graph: graph.Graph):
         next_node_id = solution[idx+1]
         if next_node_id in prev_node.neighbours:
             solutions.append(solution[:idx] + solution[idx+1:])
-
     return solutions
 
 
@@ -109,3 +108,13 @@ def neighbour_single_car(solution: List[int], graph: graph.Graph):
     output[idx] = selected
 
     return output
+
+# def trunc_random(path : List[int], graph : graph.Grap):
+#     init_point = random.randint(0, len(path) - 1)
+#     original_length = len(path) - init_point - 1
+#     path = path[:init_point + 1]
+
+
+#     while()
+
+

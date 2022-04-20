@@ -8,7 +8,10 @@ from meta.genetic import GeneticSolver
 
 
 router = parse_information('../files/input2.txt')
-solver = GeneticSolver(router, 120)
+solver = GeneticSolver(router, 600)
+solver.pop_size = len(router.graph.streets) // router.num_cars // 4
+solver.mutation_chance = 0.3
+solver.queen_ratio = 0.8
 print(solver.solve())
 
 

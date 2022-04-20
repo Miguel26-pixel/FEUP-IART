@@ -6,6 +6,7 @@ from utils.routing import Router
 from utils.genetic import get_initial_pop, random_select
 from utils.crossover import SA_crossover, crossover
 from utils.solution import check_solution
+from utils.neighbourhood import neighbour_single_car
 
 class GeneticSolver:
     def __init__(self, problem_info: Router, run_time: int):
@@ -72,6 +73,9 @@ class GeneticSolver:
 
         init_time = time()
         while(time() - init_time < self._run_time):
+            if(generations % 100 == 0):
+                print(time() - init_time)
+                print(evals[self.get_best_eval(evals)])
             generations += 1
             parent1 = population[self.get_best_eval(evals)]
             parent2 = random_select(population)
@@ -82,8 +86,7 @@ class GeneticSolver:
             random_value = random.uniform(0, 1)
 
             if random_value < self._mutation_chance:
-                # TODO: mutate this bitch
-                pass
+                child = neighbour_single_car(child, self._problem_info.graph)
 
             removed_member = self.get_worst_eval(evals)
             population[removed_member] = child
