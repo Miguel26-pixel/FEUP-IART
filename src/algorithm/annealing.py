@@ -33,18 +33,17 @@ def simulated_annealing(
         # Calculate solution
         (valid, new_sol_score) = check_solution(problem_info, new_sol)
 
-        print(i, curr_temp, curr_best, new_sol_score, initial)
-
         if valid and new_sol_score > curr_best:
             curr_sol = new_sol
             curr_best = new_sol_score
 
         delta = new_sol_score - curr_best
 
-        ola = math.exp(float(delta) / curr_temp)
-        print(ola)
+        print(i, curr_temp, delta, math.exp(float(delta) /
+              curr_temp), curr_best, new_sol_score, initial)
 
-        if valid and (delta > 0) or (random() < ola):
+        prob = math.exp(float(delta) / curr_temp)
+        if valid and (delta > 0) or (random() < prob):
             curr_sol = new_sol
             curr_best = new_sol_score
 

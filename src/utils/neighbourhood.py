@@ -76,6 +76,8 @@ def add_multiple_nodes(solution: List[int], graph: graph.Graph):
     final_node = graph.junctions[solution[final]].id
 
     dists = dijkstra(graph, initial_node)
+    if not (final_node in dists.keys()):
+        return [solution]
 
     path = []
 
