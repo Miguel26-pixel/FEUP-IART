@@ -1,3 +1,5 @@
+import functools
+import math
 import random
 from typing import List
 from .graph import Graph, Street
@@ -77,10 +79,16 @@ def get_initial_pop(problem_info: Router, size: int, queen_num: int, max_iterati
 
     return population
 
-def normalize_solutions(evals: List[int]):
-    sum_evals = sum(evals)
-    return [x / sum_evals for x in evals]
+def inverse_diff_to_max(max, val):
+    return 1/(max - val + 1)
 
-def selection_ga(evals: List[int], solutions):
-    normalized = normalize_solutions(evals)
+def log_diff_to_max(max, val, base):
+    return 1/(math.log(max-val+1, base)+1)
+
+def normalize_solutions(evals: List[int], value_func):
+    sum_evals = functools.reduce(lambda acc, new: acc + value_func(new), evals, 0)
+    return [value_func(x) / sum_evals for x in evals]
+
+def selection_ga(evals: List[int], solutions, value_func):
+    normalized = normalize_solutions(evals, value_func)
     return random.choices(solutions, normalized, k=2)
