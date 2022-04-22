@@ -17,6 +17,7 @@ def simulated_annealing(
         sol: List[List[int]]):
 
     f = open("temp.csv", "x")
+    f.write(f"iteration,curr_best,new_sol_score,curr_temp\n")
 
     curr_sol = sol
     curr_best = 0  # calculate solution
