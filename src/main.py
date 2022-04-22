@@ -39,7 +39,7 @@ TEMP_VARIATION = [
 
 
 final_sol = simulated_annealing(
-    router, 10000, 10000, TEMP_VARIATION[1], neighbour_single_car, 1, curr_sol)
+    router, 10000, 10000, TEMP_VARIATION[2], neighbour_single_car, 1, curr_sol)
 
 
 print(check_solution(router, final_sol))

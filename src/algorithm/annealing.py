@@ -16,6 +16,8 @@ def simulated_annealing(
         action_ratio: float,
         sol: List[List[int]]):
 
+    f = open("temp.csv", "x")
+
     curr_sol = sol
     curr_best = 0  # calculate solution
     curr_temp = initial_temp
@@ -41,6 +43,8 @@ def simulated_annealing(
 
         print(i, curr_temp, delta, math.exp(float(delta) /
               curr_temp), curr_best, new_sol_score, initial)
+
+        f.write(f"{i},{curr_best},{new_sol_score},{curr_temp}\n")
 
         prob = math.exp(float(delta) / curr_temp)
         if valid and (delta > 0) or (random() < prob):

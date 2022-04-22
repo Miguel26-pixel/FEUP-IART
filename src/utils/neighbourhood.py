@@ -75,6 +75,31 @@ def add_multiple_nodes(solution: List[int], graph: graph.Graph):
     initial_node = graph.junctions[solution[initial]].id
     final_node = graph.junctions[solution[final]].id
 
+    dists = inverse_dijkstra(graph, initial_node)
+    if not (final_node in dists.keys()):
+        return [solution]
+
+    path = []
+
+    while final_node != initial_node:
+        (_, next_node, _) = dists[final_node]
+        path.append(next_node)
+        final_node = next_node
+
+    path.reverse()
+
+    return [solution[:initial] + path + solution[final:]]
+
+
+def remove_multiple_nodes(solution: List[int], graph: graph.Graph):
+    if len(solution) < 2:
+        return []
+
+    initial = random.randint(0, len(solution) - 2)
+    final = random.randint(initial + 1, len(solution) - 1)
+    initial_node = graph.junctions[solution[initial]].id
+    final_node = graph.junctions[solution[final]].id
+
     dists = dijkstra(graph, initial_node)
     if not (final_node in dists.keys()):
         return [solution]
@@ -91,8 +116,8 @@ def add_multiple_nodes(solution: List[int], graph: graph.Graph):
     return [solution[:initial] + path + solution[final:]]
 
 
-NEIGHBOURHOOD_FUNCTIONS = [add_node, remove_node,
-                           add_multiple_nodes, remove_middle_node]
+NEIGHBOURHOOD_FUNCTIONS = [
+    add_node, remove_multiple_nodes, remove_node, add_multiple_nodes]
 
 
 def select_car_solution(solutions: List[int], _: graph.Graph):
@@ -137,7 +162,7 @@ def neighbour_single_car(solution: List[int], graph: graph.Graph, _: float):
     return output
 
 
-def dijkstra(graph: graph.Graph, start: int):
+def inverse_dijkstra(graph: graph.Graph, start: int, ):
     """Visit all nodes and calculate the shortest paths to each from start"""
     queue = [(0, 0, start)]
     distances = {start: (0, None, 1)}
@@ -164,5 +189,36 @@ def dijkstra(graph: graph.Graph, start: int):
                     queue, (neighbour_dist / path_size, idx, junction))
                 distances[junction] = (
                     neighbour_dist / path_size, node, path_size + 1)
+
+    return distances
+
+
+def dijkstra(graph: graph.Graph, start: int, ):
+    """Visit all nodes and calculate the shortest paths to each from start"""
+    queue = [(0, 0, start)]
+    distances = {start: (0, None, 1)}
+    visited = set()
+
+    idx = 0
+
+    while queue:
+        _, _, node = heapq.heappop(queue)  # (distance, node), ignore distance
+        if node in visited:
+            continue
+        visited.add(node)
+        (dist, _, path_size) = distances[node]
+
+        for street in graph.junctions[node].streets:
+            junction = street.final.id
+            neighbour_dist = street.length
+            if junction in visited:
+                continue
+            neighbour_dist += dist
+            if neighbour_dist < distances.get(junction, (float('inf'), None, 1))[0]:
+                idx += 1
+                heapq.heappush(
+                    queue, (neighbour_dist, idx, junction))
+                distances[junction] = (
+                    neighbour_dist, node, path_size + 1)
 
     return distances
