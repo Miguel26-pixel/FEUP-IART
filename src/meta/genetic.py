@@ -9,16 +9,19 @@ from utils.solution import check_solution
 from utils.neighbourhood import neighbour_single_car
 
 class GeneticSolver:
-    def __init__(self, problem_info: Router, run_time: int):
+    def __init__(self, problem_info: Router, max_gen: int):
         self._problem_info = problem_info
-        self._run_time = run_time
+        self._max_gen = max_gen
         self._pop_size = len(
             problem_info.graph.streets) // problem_info.num_cars // 100
         self._min_pop_size = 100
         self._queen_ratio = 0.4
-        self._run_time = run_time
         self._crossover_function = SA_crossover
         self._mutation_chance = 0.2
+        self._poll_rate = 100
+
+    def set_poll_rate(self, poll_rate):
+        self._poll_rate = poll_rate
 
     def set_pop_size(self, pop_size):
         self._pop_size = pop_size
@@ -40,6 +43,7 @@ class GeneticSolver:
     queen_ratio = property(fset=set_queen_ratio)
     crossover_function = property(fset=set_crossover_function)
     mutation_chance = property(fset=set_mutation_chance)
+    poll_rate = property(fset=set_poll_rate)
 
     def get_evals(self, population: List[List[List[int]]]):
         evals = []
@@ -71,18 +75,20 @@ class GeneticSolver:
         evals = self.get_evals(population)
         best_eval = self.get_best_eval(evals)
         generations = 0
-        x = [0.5]
-        y = [evals[best_eval]]
-        y_worst = [evals[self.get_worst_eval(evals)]]
+        gen_tick = 0
+        x = []
+        y = []
+        y_worst = []
 
         init_time = time()
-        while(time() - init_time < self._run_time):
-            if(generations % 100 == 0):
+        while(self._max_gen > generations):
+            if(generations % self._poll_rate == 0):
                 print(time() - init_time)
                 print(evals[best_eval])
-                x.append(x[-1]+1)
+                x.append(gen_tick)
                 y.append(evals[best_eval])
                 y_worst.append(evals[self.get_worst_eval(evals)])
+                gen_tick += 1
 
             generations += 1
             [parent1, parent2] = selection_ga(
