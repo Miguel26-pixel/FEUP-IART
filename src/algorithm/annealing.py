@@ -6,6 +6,7 @@ from typing import List, Callable
 from utils import graph
 from utils.routing import Router
 from utils.solution import check_solution
+from utils.neighbourhood import add_node, remove_multiple_nodes, remove_node, add_multiple_nodes
 
 finished = False
 
@@ -28,7 +29,7 @@ def simulated_annealing(
         sol: List[List[int]]):
     global finished
 
-    f = open("temp.csv", "x")
+    f = open("temp.csv", "w")
     f.write(f"iteration,curr_best,new_sol_score,curr_temp\n")
 
     finished = False
@@ -47,7 +48,7 @@ def simulated_annealing(
             return curr_sol
 
         new_sol = neighbour_function(
-            curr_sol, problem_info, action_ratio)
+            curr_sol, problem_info, action_ratio, [add_node, remove_multiple_nodes, remove_node, add_multiple_nodes])
 
         # Calculate solution
         (valid, new_sol_score) = check_solution(problem_info, new_sol)
@@ -64,7 +65,7 @@ def simulated_annealing(
             curr_sol = new_sol
             curr_best = new_sol_score
 
-    f = open("solution.txt", "x")
+    f = open("solution.txt", "w")
     for line in curr_sol:
         f.write(','.join(map(str, line)) + "\n")
 

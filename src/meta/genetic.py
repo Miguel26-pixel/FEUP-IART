@@ -122,7 +122,7 @@ class GeneticSolver:
                 best_eval = removed_member
         print(f"DONE! in {time() - init_time} with {generations} generations")
 
-        return evals[best_eval], x, y, y_worst
+        return evals[best_eval], x, y, y_worst, population[best_eval]
 
     def solve(self):
         n_streets = len(self._problem_info.graph.streets)
