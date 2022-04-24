@@ -10,12 +10,12 @@ from utils.solution import check_solution
 from testing.profiling import function_time
 from algorithm.annealing import simulated_annealing
 from meta.genetic import GeneticSolver
-# import matplotlib.pyplot as plt
-# import cython
+import matplotlib.pyplot as plt
+import cython
 
 
-# if cython.compiled:
-#     print("hey")
+if cython.compiled:
+    print("hey")
 
 
 
