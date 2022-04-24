@@ -4,9 +4,13 @@ import random
 from typing import List
 
 from utils import graph
+from utils import routing
+from utils.routing import Router
+from utils.solution import check_solution
 
 
-def add_node(solution: List[int], graph: graph.Graph) -> List[List[int]]:
+def add_node(solution: List[int], router: Router) -> List[List[int]]:
+    graph = router.graph
     if len(graph.junctions) == 0:
         return []
 
@@ -24,18 +28,16 @@ def add_node(solution: List[int], graph: graph.Graph) -> List[List[int]]:
     return solutions
 
 
-def remove_node(solution: List[int], _: graph.Graph):
+def remove_node(solution: List[int], _: Router):
     if len(solution) < 1:
         return []
     return [solution.copy()[:-1]]
 
 
-def placebo_solution(solution: List[int], _: graph.Graph):
-    return solution
-
-
-def add_middle_node(solution: List[int], graph: graph.Graph):
+def add_middle_node(solution: List[int], router: Router):
     solutions = []
+
+    graph = router.graph
 
     for (idx, node_id) in enumerate(solution):
         if (idx == len(solution) - 1):
@@ -53,8 +55,10 @@ def add_middle_node(solution: List[int], graph: graph.Graph):
     return solutions
 
 
-def remove_middle_node(solution: List[int], graph: graph.Graph):
+def remove_middle_node(solution: List[int], router: Router):
     solutions = []
+
+    graph = router.graph
 
     for idx in range(1, len(solution) - 1):
 
@@ -66,10 +70,11 @@ def remove_middle_node(solution: List[int], graph: graph.Graph):
     return solutions
 
 
-
-def add_multiple_nodes(solution: List[int], graph: graph.Graph):
+def add_multiple_nodes(solution: List[int], router: Router):
     if len(solution) < 2:
         return []
+
+    graph = router.graph
 
     initial = random.randint(0, len(solution) - 2)
     final = random.randint(initial + 1, len(solution) - 1)
@@ -91,10 +96,11 @@ def add_multiple_nodes(solution: List[int], graph: graph.Graph):
 
     return [solution[:initial] + path + solution[final:]]
 
-
-def remove_multiple_nodes(solution: List[int], graph: graph.Graph):
+def remove_multiple_nodes(solution: List[int], router: Router):
     if len(solution) < 2:
         return []
+
+    graph = router.graph
 
     initial = random.randint(0, len(solution) - 2)
     final = random.randint(initial + 1, len(solution) - 1)
@@ -117,13 +123,15 @@ def remove_multiple_nodes(solution: List[int], graph: graph.Graph):
     return [solution[:initial] + path + solution[final:]]
 
 
-def remove_end_nodes(solution: List[int], graph: graph.Graph):
+def remove_end_nodes(solution: List[int], router: Router):
+    graph = router.graph
     cuttoff = random.randint(1, len(solution))
 
     return [solution[:cuttoff]];
 
-def random_growth(solution: List[int], graph: graph.Graph):
-    max_growth = max((len(graph.streets) - len(solution)) // 2, 0)
+def random_growth(solution: List[int], router: Router):
+    graph = router.graph
+    max_growth = max(len(graph.streets) - len(solution), 0)
     growth = random.randint(0, max_growth)
     copy = solution.copy()
 
@@ -135,44 +143,86 @@ def random_growth(solution: List[int], graph: graph.Graph):
 
     return [copy]
 
-
 NEIGHBOURHOOD_FUNCTIONS = [
     remove_end_nodes, random_growth, add_multiple_nodes, remove_multiple_nodes
 ]
 
 
-def select_car_solution(solutions: List[int], _: graph.Graph):
+def remove_multiple_nodes(solution: List[int], router: Router):
+    if len(solution) < 2:
+        return []
+
+    graph = router.graph
+
+    initial = random.randint(0, len(solution) - 2)
+    final = random.randint(initial + 1, len(solution) - 1)
+    initial_node = graph.junctions[solution[initial]].id
+    final_node = graph.junctions[solution[final]].id
+
+    dists = dijkstra(graph, initial_node)
+    if not (final_node in dists.keys()):
+        return [solution]
+
+    path = []
+
+    while final_node != initial_node:
+        (_, next_node, _) = dists[final_node]
+        path.append(next_node)
+        final_node = next_node
+
+    path.reverse()
+
+    return [solution[:initial] + path + solution[final:]]
+
+def select_car_solution(solutions: List[List[int]], _: Router):
     return random.choice(solutions)
 
 
-def neighbour_multiple_cars(solution: List[List[int]], graph: graph.Graph, action_ratio: float):
+def select_best_car_solution(solutions: List[List[int]], router: Router):
+    best_score = 0
+    best_sol = []
+
+    for sol in solutions:
+        (_, score) = check_solution(router, sol)
+        print(sol,)
+        if score > best_score:
+            best_sol = sol
+            best_score = score
+    return best_sol
+
+
+def neighbour_multiple_cars(solution: List[List[int]], router: Router, action_ratio: float, functions):
     output = []
+
+    graph = router.graph
 
     for car in solution:
         if random.random() < action_ratio:
-            f = random.choice(NEIGHBOURHOOD_FUNCTIONS)
-            sols = f(car, graph)
+            f = random.choice(functions)
+            sols = f(car, router)
             if sols == []:
                 selected = car.copy()
             else:
-                selected = select_car_solution(sols, graph)
+                selected = select_car_solution(sols, router)
             output.append(selected)
         else:
             output.append(car)
     return output
 
 
-def neighbour_single_car(solution: List[int], graph: graph.Graph, _: float):
+def neighbour_single_car(solution: List[int], router: Router, _: float, functions):
     if (len(solution) == 0):
         return []
+
+    graph = router.graph
 
     idx = random.randint(0, len(solution) - 1)
 
     output = deepcopy(solution)
 
-    f = random.choice(NEIGHBOURHOOD_FUNCTIONS)
+    f = random.choice(functions)
 
-    sols = f(output[idx], graph)
+    sols = f(output[idx], router)
 
     if (sols == []):
         return []
@@ -181,6 +231,35 @@ def neighbour_single_car(solution: List[int], graph: graph.Graph, _: float):
     output[idx] = selected
 
     return output
+
+
+def neighbour_hill_climb_single_car(solution: List[int], router: Router, _: float, functions):
+    if (len(solution) == 0):
+        return []
+
+    idx = random.randint(0, len(solution) - 1)
+
+    best_score = 0
+    best_sol = []
+
+    for f in functions:
+        output = deepcopy(solution)
+
+        sols = f(output[idx], router)
+
+        if (sols == []):
+            continue
+
+        selected = select_car_solution(sols, router)
+        output[idx] = selected
+
+        (_, score) = check_solution(router, output)
+
+        if score > best_score:
+            best_sol = output
+            best_score = score
+
+    return best_sol
 
 
 def inverse_dijkstra(graph: graph.Graph, start: int, ):

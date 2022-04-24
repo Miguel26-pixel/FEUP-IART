@@ -6,7 +6,7 @@ from utils.routing import Router
 from utils.genetic import get_initial_pop, inverse_diff_to_max, inverse_diff_to_min, selection_ga
 from utils.crossover import SA_crossover, crossover, singlepoint_crossover
 from utils.solution import check_solution
-from utils.neighbourhood import neighbour_single_car
+from utils.neighbourhood import neighbour_hill_climb_single_car, neighbour_single_car, remove_end_nodes, remove_multiple_nodes, add_multiple_nodes, random_growth
 
 class GeneticSolver:
     def __init__(self, problem_info: Router, max_gen: int):
@@ -19,6 +19,10 @@ class GeneticSolver:
         self._crossover_function = [singlepoint_crossover]
         self._mutation_chance = 0.6
         self._poll_rate = 100
+        self.meta = True
+        self.meta_its = 2
+        self.mutation_functions = [remove_end_nodes, random_growth, add_multiple_nodes, remove_multiple_nodes]
+        self.meta_functions = [random_growth, add_multiple_nodes, remove_multiple_nodes]
 
     def set_poll_rate(self, poll_rate):
         self._poll_rate = poll_rate
@@ -100,7 +104,11 @@ class GeneticSolver:
             random_value = random.uniform(0, 1)
 
             if random_value < self._mutation_chance:
-                child = neighbour_single_car(child, self._problem_info.graph, 0.0)
+                child = neighbour_single_car(child, self._problem_info, 0.0, self.mutation_functions)
+
+            if self.meta:
+                for _ in range(self.meta_its):
+                    child = neighbour_hill_climb_single_car(child, self._problem_info, 0.0, self.meta_functions)
 
             removed_member = selection_ga(
                 evals, population, lambda val: inverse_diff_to_min(min(evals), val))[0]

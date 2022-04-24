@@ -43,8 +43,8 @@ print(len(router.graph.junctions))
 #             if dist[i][j] > dist[i][k] + dist[k][j]:
 #                 dist[i][j] = dist[i][k] + dist[k][j]
 
-its = 50
-samples = 4
+its = 400
+samples = 1
 poll_rate = 100
 x_orig = [x for x in range(0, its)]
 
@@ -59,6 +59,7 @@ for i in range(0, samples):
     solver.queen_ratio = 0.85
     solver.poll_rate = poll_rate
     solver.crossover_function = [singlepoint_crossover]
+    solver.meta = False
 
     e, _, y, y_worst = solver.solve()
     cum_y = [prev + new for prev, new in zip(cum_y, y)]
