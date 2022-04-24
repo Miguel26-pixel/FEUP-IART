@@ -82,6 +82,9 @@ def get_initial_pop(problem_info: Router, size: int, queen_num: int, max_iterati
 def inverse_diff_to_max(max, val):
     return 1/(max - val + 1)
 
+def inverse_diff_to_min(min, val):
+    return 1/(val - min + 1)
+
 def log_diff_to_max(max, val, base):
     return 1/(math.log(max-val+1, base)+1)
 
@@ -91,4 +94,4 @@ def normalize_solutions(evals: List[int], value_func):
 
 def selection_ga(evals: List[int], solutions, value_func):
     normalized = normalize_solutions(evals, value_func)
-    return random.choices(solutions, normalized, k=2)
+    return random.choices(list(range(len(solutions))), normalized, k=2)

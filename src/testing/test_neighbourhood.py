@@ -1,5 +1,4 @@
 import random
-import pytest
 from utils import neighbourhood
 from utils import graph
 
@@ -26,6 +25,7 @@ network.add_street(7, 6, 1, 1, True)
 network.add_street(6, 8, 1, 1, True)
 network.add_street(7, 8, 1, 1, True)
 
+print(neighbourhood.random_growth([0], network))
 
 def test_add_node_empty():
     sol = neighbourhood.add_node([], network)

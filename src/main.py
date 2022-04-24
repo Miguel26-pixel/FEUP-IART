@@ -2,6 +2,7 @@ import math
 from time import time
 from utils.parser import parse_information
 from utils.draw import draw_graph
+from utils.crossover import SA_crossover, order_crossover, SA_crossover_reversed, singlepoint_crossover
 from utils.genetic import greedy_solve, random_solve
 from utils.solution import check_solution
 from testing.profiling import function_time
@@ -42,7 +43,7 @@ print(len(router.graph.junctions))
 #             if dist[i][j] > dist[i][k] + dist[k][j]:
 #                 dist[i][j] = dist[i][k] + dist[k][j]
 
-its = 30
+its = 50
 samples = 4
 poll_rate = 100
 x_orig = [x for x in range(0, its)]
@@ -53,11 +54,13 @@ cum_y_worst = [0 for _ in range(0, its)]
 for i in range(0, samples):
     solver = GeneticSolver(router, its*poll_rate + 1)
     solver.pop_size = len(router.graph.streets) // router.num_cars // 3
+    print( len(router.graph.streets) // router.num_cars // 3)
     solver.mutation_chance = 0.6
     solver.queen_ratio = 0.85
     solver.poll_rate = poll_rate
+    solver.crossover_function = [singlepoint_crossover]
 
-    e, _x, y, y_worst = solver.solve()
+    e, _, y, y_worst = solver.solve()
     cum_y = [prev + new for prev, new in zip(cum_y, y)]
     cum_y_worst = [prev + new for prev, new in zip(cum_y_worst, y_worst)]
 
@@ -70,9 +73,9 @@ ax.bar(x, cum_y, width=0.375, edgecolor="white", linewidth=0.7)
 x = [a + 0.375 for a in x]
 ax.bar(x, cum_y_worst, width=0.375, edgecolor="white", linewidth=0.7, color="orange")
 
-ax.set(ylim=(min(cum_y_worst)-100000, max(cum_y)+100000), xlim=(-0.5, x_orig[-1]+0.5))
+ax.set(ylim=(max(min(cum_y_worst)-100000, 0), max(cum_y)+100000), xlim=(-0.5, x_orig[-1]+0.5))
 
-plt.xticks([a for a in x_orig])
+plt.xticks([x for x in range(0, its, its//10)])
 plt.show()
 
 # a = [10, 9, 8, 2, 1]

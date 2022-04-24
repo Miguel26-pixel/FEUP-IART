@@ -94,8 +94,10 @@ def order_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
     return parent2[:idx2_start] + parent1[idx1_start:idx1_end + 1] + parent2[idx2_end + 1:]
 
 
-def crossover(parent1: List[List[int]], parent2: List[List[int]], graph: graph.Graph, crossover_func):
+def crossover(parent1: List[List[int]], parent2: List[List[int]], graph: graph.Graph, crossover_funcs):
     result = []
+
+    crossover_func = random.choice(crossover_funcs)
 
     for i in range(len(parent1)):
         result.append(crossover_func(parent1[i], parent2[i], graph))

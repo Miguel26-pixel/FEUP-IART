@@ -3,8 +3,8 @@ from time import time
 from typing import List
 import random
 from utils.routing import Router
-from utils.genetic import get_initial_pop, inverse_diff_to_max, log_diff_to_max, selection_ga
-from utils.crossover import SA_crossover, crossover
+from utils.genetic import get_initial_pop, inverse_diff_to_max, inverse_diff_to_min, selection_ga
+from utils.crossover import SA_crossover, crossover, singlepoint_crossover
 from utils.solution import check_solution
 from utils.neighbourhood import neighbour_single_car
 
@@ -13,11 +13,11 @@ class GeneticSolver:
         self._problem_info = problem_info
         self._max_gen = max_gen
         self._pop_size = len(
-            problem_info.graph.streets) // problem_info.num_cars // 100
+            problem_info.graph.streets) // problem_info.num_cars // 3
         self._min_pop_size = 100
-        self._queen_ratio = 0.4
-        self._crossover_function = SA_crossover
-        self._mutation_chance = 0.2
+        self._queen_ratio = 0.85
+        self._crossover_function = [singlepoint_crossover]
+        self._mutation_chance = 0.6
         self._poll_rate = 100
 
     def set_poll_rate(self, poll_rate):
@@ -94,7 +94,7 @@ class GeneticSolver:
             [parent1, parent2] = selection_ga(
                 evals, population, lambda val: inverse_diff_to_max(evals[best_eval], val))
 
-            child = crossover(parent1, parent2,
+            child = crossover(population[parent1], population[parent2],
                               self._problem_info.graph, self._crossover_function)
 
             random_value = random.uniform(0, 1)
@@ -102,7 +102,8 @@ class GeneticSolver:
             if random_value < self._mutation_chance:
                 child = neighbour_single_car(child, self._problem_info.graph, 0.0)
 
-            removed_member = self.get_worst_eval(evals)
+            removed_member = selection_ga(
+                evals, population, lambda val: inverse_diff_to_min(min(evals), val))[0]
             population[removed_member] = child
             _, evals[removed_member] = check_solution(
                 self._problem_info, child)
