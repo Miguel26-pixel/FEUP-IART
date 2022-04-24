@@ -61,7 +61,7 @@ class Junction:
             self.neighbours.add(street.final.id)
 
     def __str__(self):
-        return "Junction at " + ','.join(map(str, self.coords))
+       return "Junction at " + ','.join(map(str, self.coords))
 
 
 class Graph:

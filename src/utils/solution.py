@@ -1,8 +1,8 @@
-from utils.graph import Graph, Junction, Street
-from utils.routing import Router
+from .graph import Graph
+from .routing import Router
 
 def check_street(graph: Graph,initial,final):
-    for street in graph.junctions[initial].streets:
+    for street in graph.streets:
         if ((street.initial.id == initial and street.final.id == final) or (street.final.id == initial and street.initial.id == final)):
             return street
     

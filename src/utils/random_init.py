@@ -1,12 +1,12 @@
-from utils.graph import Graph, Junction, Street
-from utils.routing import Router
-from utils.solution import check_street
+from .graph import Graph, Junction, Street
+from .routing import Router
+from .solution import check_street
 import random
 import math
 
 def check_junction(graph,junction):
     for i in graph.junctions:
-        if (i.coords == junction.coords):
+        if (i.coords == junction.coords or (i.coords[0] - 10 <= junction.coords[0] <= i.coords[0] + 10) or (i.coords[1] - 10 <= junction.coords[1] <= i.coords[1] + 10)):
             return True
     return False
 
@@ -17,11 +17,13 @@ def check_lonely_junction(graph):
     return False
 
 def get_initial_junction(graph):
-    initial_junction = random.randint(0,len(graph.junctions)-1)
-    for i in graph.streets:
-        if (i.initial == initial_junction or (i.final == initial_junction and i.bidirectional)):
-            return initial_junction
-    return get_initial_junction(graph)
+    return random.randint(0,len(graph.junctions)-1)
+
+def check_street(graph: Graph,initial,final):
+    for street in graph.streets:
+        if ((street.initial.id == initial and street.final.id == final) or (street.final.id == initial and street.initial.id == final)):
+            return street
+    return None
 
 def create_problem():
     graph = Graph()
@@ -33,13 +35,15 @@ def create_problem():
     for i in range (number_of_junctions):
         
         #coords
-        random_x = random()*random.randint(1,200)
-        random_y = random()*random.randint(1,200)
+        random_x = random.random()*random.randint(60,1000)
+        random_y = random.random()*random.randint(120,600)
 
         junction = Junction((random_x,random_y),i)
 
         if not check_junction(graph,junction) :
-            graph.add_junction(junction)
+            graph.add_junction((random_x,random_y))
+    
+    number_of_junctions = len(graph.junctions)
         
     while (check_lonely_junction(graph)) :
 
@@ -47,12 +51,11 @@ def create_problem():
         random_junction2 = random.randint(0,number_of_junctions-1)
 
         if (check_street(graph,random_junction1,random_junction2) == None):
-
-            length_x1,length_y1 = graph.junctions[random_junction1].coords
-            length_x2,length_y2 = graph.junctions[random_junction2].coords
+            (length_x1,length_y1) = graph.junctions[random_junction1].coords
+            (length_x2,length_y2) = graph.junctions[random_junction2].coords
             length = math.sqrt((length_y2-length_y1)**2 + (length_x2-length_x1)**2)
 
-            bidirectional = True if (random()<=0.2) else False
+            bidirectional = random.random()<=0.2
 
             speed = random.randint(10,120)
 
@@ -61,9 +64,9 @@ def create_problem():
             if (time > max_street_time):
                 max_street_time = time
 
-            graph.add_street(Street(graph.junctions[random_junction1],graph.junctions[random_junction2],length,time,bidirectional))
+            graph.add_street(graph.junctions[random_junction1].id,graph.junctions[random_junction2].id,length,time,bidirectional)
 
-    max_street_time = max_street_time * random()*10
+    max_street_time = max_street_time * random.random()*10
 
     initial_junction = get_initial_junction(graph)
 
