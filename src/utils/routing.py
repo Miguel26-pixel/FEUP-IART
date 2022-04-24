@@ -1,4 +1,4 @@
-from .graph import Graph
+from utils.graph import Graph
 
 class Router:
     """

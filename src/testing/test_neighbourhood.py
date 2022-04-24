@@ -1,5 +1,4 @@
 import random
-import pytest
 from utils import neighbourhood
 from utils import graph
 
@@ -26,6 +25,7 @@ network.add_street(7, 6, 1, 1, True)
 network.add_street(6, 8, 1, 1, True)
 network.add_street(7, 8, 1, 1, True)
 
+print(neighbourhood.random_growth([0], network))
 
 def test_add_node_empty():
     sol = neighbourhood.add_node([], network)
@@ -82,17 +82,17 @@ def test_remove_middle_node():
 def test_single_car():
     random.seed(1)
 
-    sol = neighbourhood.neighbour_single_car([[0, 5], [0]], network)
+    sol = neighbourhood.neighbour_single_car([[0, 5], [0]], network, 1)
     assert sol == [[0, 5, 7], [0]]
 
     random.seed(2)
 
-    sol = neighbourhood.neighbour_single_car([[0, 5], [0]], network)
+    sol = neighbourhood.neighbour_single_car([[0, 5], [0]], network, 1)
     assert sol == [[0, 5, 6], [0]]
 
     random.seed(3)
 
-    sol = neighbourhood.neighbour_single_car([[0, 5], [0]], network)
+    sol = neighbourhood.neighbour_single_car([[0, 5], [0]], network, 1)
     assert sol == [[0], [0]]
 
 
