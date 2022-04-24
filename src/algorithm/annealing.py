@@ -31,14 +31,10 @@ def simulated_annealing(
             return curr_sol
 
         new_sol = neighbour_function(
-            curr_sol, problem_info.graph, action_ratio)
+            curr_sol, problem_info, action_ratio)
 
         # Calculate solution
         (valid, new_sol_score) = check_solution(problem_info, new_sol)
-
-        if valid and new_sol_score > curr_best:
-            curr_sol = new_sol
-            curr_best = new_sol_score
 
         delta = new_sol_score - curr_best
 

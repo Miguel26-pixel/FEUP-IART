@@ -1,7 +1,7 @@
 import math
 from algorithm.annealing import simulated_annealing
 from testing.test_dijkstra import test_multiple
-from utils.neighbourhood import neighbour_multiple_cars, neighbour_single_car
+from utils.neighbourhood import neighbour_hill_climb_single_car, neighbour_multiple_cars, neighbour_single_car
 from utils.parser import parse_information
 from utils.draw import draw_graph
 from utils.genetic import greedy_solve
@@ -39,7 +39,7 @@ TEMP_VARIATION = [
 
 
 final_sol = simulated_annealing(
-    router, 10000, 10000, TEMP_VARIATION[2], neighbour_single_car, 1, curr_sol)
+    router, 100000, 10000, TEMP_VARIATION[2], neighbour_hill_climb_single_car, 1, curr_sol)
 
 
 print(check_solution(router, final_sol))
