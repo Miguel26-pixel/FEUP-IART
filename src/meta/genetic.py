@@ -17,8 +17,8 @@ def run_genetic(router: Router, parsed):
         solver.set_pop_size(parsed.p)
     if parsed.mc != None:
         solver.set_mutation_chance(parsed.mc)
-    if hasattr(parsed, "meta"):
-        solver.meta = parsed.meta
+    if parsed.hc != None:
+        solver.meta = parsed.hc
     if parsed.e:
         solver.set_queen_ratio(parsed.e)
     _, _, _, _, solution = solver.solve()
@@ -137,7 +137,6 @@ class GeneticSolver:
                 for _ in range(self.meta_its):
                     child = neighbour_hill_climb_single_car(
                         child, self._problem_info, 0.0, self.meta_functions)
-                print(generations)
 
             for c in range(len(child)):
                 if len(child[c]) > len(self._problem_info.graph.streets)*1.2:
