@@ -83,10 +83,13 @@ class GeneticSolver:
         x = []
         y = []
         y_worst = []
+        output_it = open("iterations.txt", "w")
 
         init_time = time()
         while(self._max_gen > generations):
             if(generations % self._poll_rate == 0):
+                output_it.write(f"{gen_tick},{evals[best_eval]},{min(evals)},{time()-init_time}\n")
+                output_it.flush()
                 print(time() - init_time)
                 print(evals[best_eval])
                 x.append(gen_tick)
@@ -109,6 +112,11 @@ class GeneticSolver:
             if self.meta:
                 for _ in range(self.meta_its):
                     child = neighbour_hill_climb_single_car(child, self._problem_info, 0.0, self.meta_functions)
+                print(generations)
+
+            for c in range(len(child)):
+                if len(child[c]) > len(self._problem_info.graph.streets)*1.2:
+                    child[c] = child[c][:len(self._problem_info.graph.streets)*1.2]
 
             removed_member = selection_ga(
                 evals, population, lambda val: inverse_diff_to_min(min(evals), 5, val))[0]

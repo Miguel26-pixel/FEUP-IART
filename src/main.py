@@ -19,6 +19,7 @@ if cython.compiled:
 
 # best=0
 router = parse_information('../files/input2.txt')
+print(len(router.graph.streets))
 
 # curr_best = 0
 
@@ -79,9 +80,9 @@ router = parse_information('../files/input2.txt')
 #             if dist[i][j] > dist[i][k] + dist[k][j]:
 #                 dist[i][j] = dist[i][k] + dist[k][j]
 
-its = 200
+its = 50
 samples = 1
-poll_rate = 100
+poll_rate = 10
 x_orig = [x for x in range(0, its)]
 
 cum_y = [0 for _ in range(0, its)]
@@ -120,6 +121,8 @@ x = [a - 0.375/2 for a in x_orig]
 ax.bar(x, cum_y, width=0.375, edgecolor="white", linewidth=0.7)
 x = [a + 0.375 for a in x]
 ax.bar(x, cum_y_worst, width=0.375, edgecolor="white", linewidth=0.7, color="orange")
+# ax.plot(x_orig, cum_y, linewidth=2.0)
+# ax.plot(x_orig, cum_y_worst, linewidth=2.0, color="orange")
 
 ax.set(ylim=(max(min(cum_y_worst)-100000, 0), max(cum_y)+100000), xlim=(-0.5, x_orig[-1]+0.5))
 
