@@ -199,7 +199,7 @@ The probability a neighbourhood function is applied to a car in the option "1" o
 
 #### --genetic
 
-Algorithm used to solve the problem is the Genetic Algorithm. This option requires -i to be specified. Optional parameters: -p, -mc, -e
+Algorithm used to solve the problem is the Genetic Algorithm. This option requires -i to be specified. Optional parameters: -p, -mc, -e, -hc
 
 ##### -p
 
@@ -213,9 +213,13 @@ The genetic algorithm's mutation chance. Default: 0.6
 
 The genetic algorithm's ratio of elite (greedy) solutions in the initial population generation. Default: 0.85
 
+##### -hc
+
+If present, genetic algorithm will apply hill-climbing hybridization. Default: not used
+
 ### 3. Viewing Output
 
-After running the program, several files can be created:
+After running the program, several files are created inside the src/ folder:
 
 - iterations.csv: 100 by 100 generation report of genetic algorithm
 - temp.csv: report of simulated annealing for each iteration
