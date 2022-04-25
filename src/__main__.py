@@ -1,6 +1,7 @@
 import sys
 from meta.annealing import run_annealing
 from meta.genetic import run_genetic
+from utils.random_init import create_problem
 
 from utils.parser import setup_parser, parse_information
 
@@ -12,8 +13,9 @@ if __name__ == "__main__":
         print("Reading Paris problem")
         router = parse_information('../files/input2.txt')
     elif parsed.problem == "random":
-
-        pass
+        print("Generating random problem")
+        router = create_problem()
+        print("DONE! Generating random problem")
     else:
         print("Wrong format of problem")
         exit(1)

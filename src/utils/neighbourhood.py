@@ -161,6 +161,9 @@ def random_growth(solution: List[int], router: Router):
     growth = random.randint(0, max_growth)
     copy = solution.copy()
 
+    if len(solution) == 0:
+        return [copy]
+
     for i in range(growth):
         junction = graph.junctions[copy[-1]]
 

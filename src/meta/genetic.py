@@ -10,6 +10,7 @@ from utils.solution import check_solution
 from utils.neighbourhood import neighbour_hill_climb_single_car, neighbour_single_car, remove_end_nodes, remove_multiple_nodes, add_multiple_nodes, random_growth
 import cython
 
+
 def run_genetic(router: Router, parsed):
     solver = GeneticSolver(router, parsed.i)
     if parsed.p != None:
@@ -140,8 +141,8 @@ class GeneticSolver:
 
             for c in range(len(child)):
                 if len(child[c]) > len(self._problem_info.graph.streets)*1.2:
-                    child[c] = child[c][:len(
-                        self._problem_info.graph.streets)*1.2]
+                    child[c] = child[c][:int(len(
+                        self._problem_info.graph.streets)*1.2)]
 
             removed_member = selection_ga(
                 evals, population, lambda val: inverse_diff_to_min(min(evals), 5, val))[0]
@@ -161,7 +162,7 @@ class GeneticSolver:
         n_streets = len(self._problem_info.graph.streets)
         queen_num = floor(self._pop_size * self._queen_ratio)
 
-        print("Generating Population...")
+        print("Generating Population... ", max(self._pop_size, self._min_pop_size))
 
         start_time = time()
         population = get_initial_pop(self._problem_info, max(
