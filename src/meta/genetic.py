@@ -2,11 +2,27 @@ from math import floor
 from time import time
 from typing import List
 import random
+from utils.draw import print_genetic
 from utils.routing import Router
 from utils.genetic import get_initial_pop, inverse_diff_to_max, inverse_diff_to_min, selection_ga
 from utils.crossover import SA_crossover, crossover, singlepoint_crossover
 from utils.solution import check_solution
 from utils.neighbourhood import neighbour_hill_climb_single_car, neighbour_single_car, remove_end_nodes, remove_multiple_nodes, add_multiple_nodes, random_growth
+
+
+def run_genetic(router: Router, parsed):
+    solver = GeneticSolver(router, parsed.i)
+    if parsed.p != None:
+        solver.set_pop_size(parsed.p)
+    if parsed.mc != None:
+        solver.set_mutation_chance(parsed.mc)
+    if hasattr(parsed, "meta"):
+        solver.meta = parsed.meta
+    if parsed.e:
+        solver.set_queen_ratio(parsed.e)
+    solution = solver.solve()
+    print(check_solution(router, solution))
+
 
 class GeneticSolver:
     def __init__(self, problem_info: Router, max_gen: int):
@@ -21,8 +37,10 @@ class GeneticSolver:
         self._poll_rate = 100
         self.meta = True
         self.meta_its = 2
-        self.mutation_functions = [remove_end_nodes, random_growth, add_multiple_nodes, remove_multiple_nodes]
-        self.meta_functions = [random_growth, add_multiple_nodes, remove_multiple_nodes]
+        self.mutation_functions = [
+            remove_end_nodes, random_growth, add_multiple_nodes, remove_multiple_nodes]
+        self.meta_functions = [random_growth,
+                               add_multiple_nodes, remove_multiple_nodes]
 
     def set_poll_rate(self, poll_rate):
         self._poll_rate = poll_rate
@@ -87,8 +105,8 @@ class GeneticSolver:
         init_time = time()
         while(self._max_gen > generations):
             if(generations % self._poll_rate == 0):
-                print(time() - init_time)
-                print(evals[best_eval])
+                print_genetic(generations,
+                              time() - init_time, evals[best_eval])
                 x.append(gen_tick)
                 y.append(evals[best_eval])
                 y_worst.append(evals[self.get_worst_eval(evals)])
@@ -104,11 +122,13 @@ class GeneticSolver:
             random_value = random.uniform(0, 1)
 
             if random_value < self._mutation_chance:
-                child = neighbour_single_car(child, self._problem_info, 0.0, self.mutation_functions)
+                child = neighbour_single_car(
+                    child, self._problem_info, 0.0, self.mutation_functions)
 
             if self.meta:
                 for _ in range(self.meta_its):
-                    child = neighbour_hill_climb_single_car(child, self._problem_info, 0.0, self.meta_functions)
+                    child = neighbour_hill_climb_single_car(
+                        child, self._problem_info, 0.0, self.meta_functions)
 
             removed_member = selection_ga(
                 evals, population, lambda val: inverse_diff_to_min(min(evals), val))[0]
