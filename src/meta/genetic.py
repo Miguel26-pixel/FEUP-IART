@@ -35,7 +35,7 @@ class GeneticSolver:
         self._crossover_function = [singlepoint_crossover]
         self._mutation_chance = 0.6
         self._poll_rate = 100
-        self.meta = True
+        self.meta = False
         self.meta_its = 2
         self.mutation_functions = [
             remove_end_nodes, random_growth, add_multiple_nodes, remove_multiple_nodes]
