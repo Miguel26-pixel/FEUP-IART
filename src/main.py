@@ -8,7 +8,7 @@ from utils.crossover import SA_crossover, order_crossover, SA_crossover_reversed
 from utils.genetic import greedy_solve, random_solve
 from utils.solution import check_solution
 from testing.profiling import function_time
-from algorithm.annealing import simulated_annealing
+from meta.annealing import simulated_annealing
 from meta.genetic import GeneticSolver
 import matplotlib.pyplot as plt
 import cython
