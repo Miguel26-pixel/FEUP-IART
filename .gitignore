@@ -2,3 +2,6 @@ __pycache__/
 *.so
 *.c
 build/
+iterations.csv
+output.txt
+temp.csv
