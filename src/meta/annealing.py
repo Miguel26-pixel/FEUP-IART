@@ -99,16 +99,11 @@ def simulated_annealing(
         delta = new_sol_score - curr_best
 
         f.write(f"{i},{curr_best},{new_sol_score},{curr_temp}\n")
-
         prob = math.exp(float(delta) / curr_temp)
         if valid and (delta > 0) or (random() < prob):
             curr_sol = new_sol
             curr_best = new_sol_score
 
         print_annealing(i, time() - start_time, curr_best, new_sol_score)
-
-    f = open("solution.txt", "w")
-    for line in curr_sol:
-        f.write(','.join(map(str, line)) + "\n")
-
+        
     return curr_sol

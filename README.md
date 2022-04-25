@@ -98,4 +98,125 @@ be used for team ranking.
 
 Teams will be ranked according to their best submission score. In an event of a tie (two teams having the same best submission score), the team that reached that score for the first time earlier will be ranked higher. Resubmitting the same best solution again does not hurt the teams ranking.
 
+## How to Run the Program
 
+### Requirements
+
+- Python 3
+- pip
+
+### Libraries used:
+
+Install the following libraries using `pip install`
+
+- matplotlib
+- cython
+- pytest
+- prettytable
+- pygame
+
+### 1. Compiling (optional)
+
+- In the src/ folder, run the `make` command
+
+```
+    -> src/ $ make
+    python setup.py build_ext --inplace
+    Compiling ./graphs/display_csv.py because it changed.
+    Compiling ./meta/__init__.py because it changed.
+    Compiling ./meta/annealing.py because it changed.
+    ... # shortened for brevity
+    Compiling ./utils/solution.py because it changed.
+    Compiling main.py because it changed.
+    [ 1/19] Cythonizing ./graphs/display_csv.py
+    [ 2/19] Cythonizing ./meta/__init__.py
+    [ 3/19] Cythonizing ./meta/annealing.py
+    ... # shortened for brevity
+    [18/19] Cythonizing ./utils/solution.py
+    [19/19] Cythonizing main.py
+    running build_ext
+    building 'display_csv' extension
+    creating build
+    ... # wait while files are compiled
+    copying build/lib.linux-x86_64-3.10/display_csv.cpython-310-x86_64-linux-gnu.so -> 
+    copying build/lib.linux-x86_64-3.10/meta/__init__.cpython-310-x86_64-linux-gnu.so -> meta
+    copying build/lib.linux-x86_64-3.10/meta/annealing.cpython-310-x86_64-linux-gnu.so -> meta
+    ... # shortened for brevity
+    copying build/lib.linux-x86_64-3.10/utils/solution.cpython-310-x86_64-linux-gnu.so -> utils
+    copying build/lib.linux-x86_64-3.10/main.cpython-310-x86_64-linux-gnu.so
+```
+
+- [aside] to clean build files use `make clean`
+- Continue to step 2.
+
+### 2. Running the Program
+
+- To run the program, open a command line/terminal on the src/ folder
+- Then use the following command ```python . -h```
+- This command should show all available commands, next follows a quick breakdown of the most important ones:
+
+#### --problem
+
+This parameter is used for specifying what input the program should use. There are two options:
+
+- paris -- The input given in the Google Hash Code competition
+- random -- Randomly generated street network
+
+#### -i (required)
+
+How many iterations/generations the algorithm should run for.
+
+- Recommended for Simulated Annealing: 10 000
+- Recommended for Genetic Algorithm: 5 001 (around 7 minutes and 4 seconds)
+
+#### --annealing
+
+This parameter specifies that the algorithm used to solve the problem is the Simulated Annealing algorithm. This option requires the following parameters to be specified: -i, -t, -tf, -nf, -ar
+
+##### -t
+
+The initial temperature used in the simulated annealing algorithm
+
+##### -tf
+
+What temperature decrease function should be used:
+
+- 0: initial / (1 + math.log(1 + i))
+- 1: initial / (1 + ALPHA * math.log(1 + i))
+- 2: initial / (1 + ALPHA * math.log(1 + math.pow(i, 2)))
+
+##### -nf
+
+What neighbourhood function style should be used:
+
+- 0: Apply neighbourhood function to single car
+- 1: Apply neighbourhood function to all cars based on -ar
+- 2: Apply neighbourhood function to a single car using "Steepest Descent"
+
+##### -ar
+
+The probability a neighbourhood function is applied to a car in the option "1" of -nf
+
+#### --genetic
+
+Algorithm used to solve the problem is the Genetic Algorithm. This option requires -i to be specified. Optional parameters: -p, -mc, -e
+
+##### -p
+
+The population size in the genetic algorithm. Default: based on the graph size.
+
+##### -mc
+
+The genetic algorithm's mutation chance. Default: 0.6
+
+##### -e
+
+The genetic algorithm's ratio of elite (greedy) solutions in the initial population generation. Default: 0.85
+
+### 3. Viewing Output
+
+After running the program, several files can be created:
+
+- iterations.csv: 100 by 100 generation report of genetic algorithm
+- temp.csv: report of simulated annealing for each iteration
+- output.txt: The solution in the standard specified by the Google Hash Code problem

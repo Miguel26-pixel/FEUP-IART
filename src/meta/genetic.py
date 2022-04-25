@@ -104,7 +104,7 @@ class GeneticSolver:
         x = []
         y = []
         y_worst = []
-        output_it = open("iterations.txt", "w")
+        output_it = open("iterations.csv", "w")
 
         init_time = time()
         while(self._max_gen > generations):
