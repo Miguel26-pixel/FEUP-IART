@@ -19,7 +19,7 @@ class GeneticSolver:
         self._crossover_function = [singlepoint_crossover]
         self._mutation_chance = 0.6
         self._poll_rate = 100
-        self.meta = True
+        self.meta = False
         self.meta_its = 2
         self.mutation_functions = [remove_end_nodes, random_growth, add_multiple_nodes, remove_multiple_nodes]
         self.meta_functions = [random_growth, add_multiple_nodes, remove_multiple_nodes]
@@ -96,10 +96,10 @@ class GeneticSolver:
 
             generations += 1
             [parent1, parent2] = selection_ga(
-                evals, population, lambda val: inverse_diff_to_max(evals[best_eval], val))
+                evals, population, lambda val: inverse_diff_to_max(evals[best_eval], 1.0/2.0, val))
 
             child = crossover(population[parent1], population[parent2],
-                              self._problem_info.graph, self._crossover_function)
+                              self._problem_info, self._crossover_function)
 
             random_value = random.uniform(0, 1)
 
@@ -111,7 +111,7 @@ class GeneticSolver:
                     child = neighbour_hill_climb_single_car(child, self._problem_info, 0.0, self.meta_functions)
 
             removed_member = selection_ga(
-                evals, population, lambda val: inverse_diff_to_min(min(evals), val))[0]
+                evals, population, lambda val: inverse_diff_to_min(min(evals), 5, val))[0]
             population[removed_member] = child
             _, evals[removed_member] = check_solution(
                 self._problem_info, child)
@@ -140,3 +140,9 @@ class GeneticSolver:
 
 # 1290121
 # 1354018
+
+
+[
+    [200, 301, 205, 100, 102, ...],
+    [200, 202, 800, 103, 2, ...],
+]

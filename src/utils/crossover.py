@@ -5,6 +5,8 @@
 from typing import List
 from . import graph
 import random
+from utils.neighbourhood import add_multiple_nodes_crossover
+from utils.routing import Router
 
 
 def get_common_junctions(list1, list2):
@@ -12,7 +14,7 @@ def get_common_junctions(list1, list2):
 
 
 def get_crossover_point(parent1: List[int], parent2: List[int]):
-    common_junctions = get_common_junctions(parent1, parent2)
+    common_junctions = get_common_junctions(parent1[1:], parent2[1:])
 
     if(len(common_junctions) == 0):
         return None
@@ -38,11 +40,11 @@ def get_crossover_point(parent1: List[int], parent2: List[int]):
 # should we remove cycles?
 
 
-def singlepoint_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
+def singlepoint_crossover(parent1: List[int], parent2: List[int], router: Router):
     points = get_crossover_point(parent1, parent2)
-
+    
     if points == None:
-        return parent1
+        return add_multiple_nodes_crossover(parent1, parent2, router)
 
     (idx1, idx2) = points
 
@@ -51,9 +53,10 @@ def singlepoint_crossover(parent1: List[int], parent2: List[int], graph: graph.G
 # one offspring version of SA
 
 
-def SA_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
+def SA_crossover(parent1: List[int], parent2: List[int], router: Router):
     neighbours = set()
     match_point_list = set()
+    graph = router.graph
 
     for junction_num in parent2:
         neighbours.update(graph.junctions[junction_num].neighbours)
@@ -80,11 +83,11 @@ def SA_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
 # will this make any difference?
 
 
-def SA_crossover_reversed(parent1: List[int], parent2: List[int], graph: graph.Graph):
-    return SA_crossover(parent2, parent1, graph)
+def SA_crossover_reversed(parent1: List[int], parent2: List[int], router: Router):
+    return SA_crossover(parent2, parent1, router)
 
 
-def order_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
+def order_crossover(parent1: List[int], parent2: List[int], router: Router):
     idx1_start = random.randint(0, len(parent1) - 1)
     idx1_end = random.randint(idx1_start, len(parent1)-1)
 
@@ -94,12 +97,12 @@ def order_crossover(parent1: List[int], parent2: List[int], graph: graph.Graph):
     return parent2[:idx2_start] + parent1[idx1_start:idx1_end + 1] + parent2[idx2_end + 1:]
 
 
-def crossover(parent1: List[List[int]], parent2: List[List[int]], graph: graph.Graph, crossover_funcs):
+def crossover(parent1: List[List[int]], parent2: List[List[int]], router: Router, crossover_funcs):
     result = []
 
     crossover_func = random.choice(crossover_funcs)
 
     for i in range(len(parent1)):
-        result.append(crossover_func(parent1[i], parent2[i], graph))
+        result.append(crossover_func(parent1[i], parent2[i], router))
 
     return result

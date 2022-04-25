@@ -96,6 +96,32 @@ def add_multiple_nodes(solution: List[int], router: Router):
 
     return [solution[:initial] + path + solution[final:]]
 
+def add_multiple_nodes_crossover(solution: List[int], solution2: List[int], router: Router):
+    if len(solution) < 2 or len(solution2) < 2:
+        return []
+
+    graph = router.graph
+
+    initial = random.randint(0, len(solution) - 1)
+    final = random.randint(0, len(solution2) - 1)
+    initial_node = graph.junctions[solution[initial]].id
+    final_node = graph.junctions[solution2[final]].id
+
+    dists = inverse_dijkstra(graph, initial_node)
+    if not (final_node in dists.keys()):
+        return [solution, solution2]
+
+    path = []
+
+    while final_node != initial_node:
+        (_, next_node, _) = dists[final_node]
+        path.append(next_node)
+        final_node = next_node
+
+    path.reverse()
+
+    return [solution[:initial] + path + solution2[final:]]
+
 def remove_multiple_nodes(solution: List[int], router: Router):
     if len(solution) < 2:
         return []
